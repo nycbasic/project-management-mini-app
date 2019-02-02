@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { logoutUser } from "../actions/Auth";
 
 class Navbar extends Component {
   render() {
+    console.log(this.props);
     const { isAuthenticated, user } = this.props.auth;
-    const { logoutUser } = this.props;
+    const { logoutUser, history } = this.props;
     return (
       <nav className="navbar navbar-expand-lg">
         <div className="container">
@@ -25,7 +26,7 @@ class Navbar extends Component {
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <span className="navbar-toggler-icon" />
+            <i className="fas fa-bars" />
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -33,12 +34,24 @@ class Navbar extends Component {
               {!isAuthenticated ? (
                 <React.Fragment>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/signup">
+                    <Link
+                      onClick={() => history.push("/signup")}
+                      className="nav-link"
+                      to="/signup"
+                      data-toggle="collapse"
+                      data-target="#navbarSupportedContent"
+                    >
                       Signup
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/login">
+                    <Link
+                      onClick={() => history.push("/login")}
+                      className="nav-link"
+                      to="/login"
+                      data-toggle="collapse"
+                      data-target="#navbarSupportedContent"
+                    >
                       Log-in
                     </Link>
                   </li>
@@ -46,11 +59,11 @@ class Navbar extends Component {
               ) : (
                 <li className="nav-item">
                   <Link
-                    onClick={() => {
-                      logoutUser();
-                    }}
+                    onClick={() => logoutUser()}
                     className="nav-link"
                     to="/login"
+                    data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
                   >
                     <img
                       className="rounded-circle"
@@ -80,4 +93,4 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   { logoutUser }
-)(Navbar);
+)(withRouter(Navbar));

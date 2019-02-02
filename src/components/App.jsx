@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import JwtDecoded from "jwt-decode";
 import Navbar from "../components/Navbar";
-import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
+import { Route, Switch, HashRouter as Router } from "react-router-dom";
 import { connect } from "react-redux";
 import { setCurrentUser, logoutUser } from "../actions/Auth";
 import { setAuthHeader } from "../helpers/set-token";
@@ -74,7 +74,7 @@ class App extends Component {
 
   render() {
     return (
-      <Router basename={process.env.PUBLIC_URL}>
+      <Router>
         <React.Fragment>
           <Navbar />
           <div className="main">

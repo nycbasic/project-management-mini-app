@@ -10,11 +10,13 @@ import {
 import { clearErrors } from "./Errors";
 import { clearFlashMsg } from "./Flash";
 
+const url = "https://auth-mini-server.herokuapp.com";
+
 export const resetUser = email => dispatch => {
   dispatch(clearErrors());
   dispatch(clearFlashMsg());
   axios
-    .post("/api/users/forgot", email)
+    .post(`${url}/api/users/forgot`, email)
     .then(res => {
       dispatch({
         type: FLASH_MSG,
@@ -31,7 +33,7 @@ export const resetUser = email => dispatch => {
 
 export const loadReset = token => dispatch => {
   axios
-    .get(`/api/users/reset/${token}`)
+    .get(`${url}/api/users/reset/${token}`)
     .then(res => {
       const { validToken, expiredToken, msg } = res.data;
       if (validToken) {
@@ -64,7 +66,7 @@ export const resetPassword = (newPassword, token, callback) => dispatch => {
   dispatch(clearErrors());
   dispatch(clearFlashMsg());
   axios
-    .post(`/api/users/reset/${token}`, newPassword)
+    .post(`${url}/api/users/reset/${token}`, newPassword)
     .then(res => {
       dispatch({
         type: FLASH_MSG,
