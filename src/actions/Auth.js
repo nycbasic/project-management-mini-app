@@ -1,43 +1,34 @@
 import axios from "axios";
 import JwtDecode from "jwt-decode";
-import { SET_CURRENT_USER, GET_ERRORS, FLASH_MSG } from "./Types";
-import { setAuthHeader } from "../helpers/set-token";
+import {
+  SET_CURRENT_USER,
+  GET_ERRORS,
+  FLASH_MSG,
+  CLEAR_TASKS,
+  CLEAR_PROJECTS,
+} from "./Types";
+import {
+  setBodyLoader
+} from "./loading";
+import {
+  setAuthHeader
+} from "../helpers/set-token";
 
-const url = "https://auth-mini-server.herokuapp.com";
+const url = "https://project-management-mini-server.herokuapp.com";
 
 export const createUser = (newUser, callback) => dispatch => {
+  dispatch(setBodyLoader(true));
   axios
     .post(`${url}/api/users/signup`, newUser)
     .then(res => {
-      const { token } = res.data;
-      setAuthHeader(token);
-      localStorage.setItem("jwt", token);
-      dispatch(setCurrentUser(JwtDecode(token)));
-      callback.push("/dashboard");
-    })
-    .catch(err => {
-      console.log(err);
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      });
-    });
-};
-
-export const loginUser = (user, callback) => dispatch => {
-  axios
-    .post(`${url}/api/users/login`, user)
-    .then(res => {
-      if (res.data.msg) {
-        dispatch({
-          type: FLASH_MSG,
-          payload: res.data
-        });
-      } else {
-        const { token } = res.data;
+      const {
+        token
+      } = res.data;
+      if (token) {
         setAuthHeader(token);
         localStorage.setItem("jwt", token);
         dispatch(setCurrentUser(JwtDecode(token)));
+        dispatch(setBodyLoader(false));
         callback.push("/dashboard");
       }
     })
@@ -46,6 +37,42 @@ export const loginUser = (user, callback) => dispatch => {
         type: GET_ERRORS,
         payload: err.response.data
       });
+      dispatch(setBodyLoader(false));
+    });
+};
+
+export const loginUser = (user, callback) => dispatch => {
+  dispatch(setBodyLoader(true))
+  axios
+    .post(`${url}/api/users/login`, user)
+    .then(res => {
+      const {
+        msg,
+        token
+      } = res.data
+      if (token) {
+        setAuthHeader(token);
+        localStorage.setItem("jwt", token);
+        dispatch(setCurrentUser(JwtDecode(token)));
+        dispatch(setBodyLoader(false))
+        callback.push("/dashboard");
+
+      }
+      if (msg) {
+        dispatch({
+          type: FLASH_MSG,
+          payload: res.data
+        });
+        dispatch(setBodyLoader(false))
+      }
+    })
+    .catch(err => {
+      console.log("FROM AUTH ACTION - LOGIN USER:", err);
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      });
+      dispatch(setBodyLoader(false));
     });
 };
 
@@ -73,10 +100,14 @@ export const deleteUser = id => dispatch => {
 };
 
 export const setCurrentUser = user => dispatch => {
-  dispatch({
-    type: SET_CURRENT_USER,
-    payload: user
-  });
+  if (Date.now() / 1000 > user.exp) {
+    dispatch(logoutUser());
+  } else {
+    dispatch({
+      type: SET_CURRENT_USER,
+      payload: user
+    });
+  }
 };
 
 export const logoutUser = () => dispatch => {
@@ -85,5 +116,13 @@ export const logoutUser = () => dispatch => {
   dispatch({
     type: SET_CURRENT_USER,
     payload: {}
+  });
+  dispatch({
+    type: CLEAR_TASKS,
+    payload: ""
+  });
+  dispatch({
+    type: CLEAR_PROJECTS,
+    payload: []
   });
 };

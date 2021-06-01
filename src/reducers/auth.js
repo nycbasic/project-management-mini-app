@@ -1,19 +1,22 @@
-import { SET_CURRENT_USER } from "../actions/Types";
-import { isEmpty } from "../helpers/validation";
+import {
+  SET_CURRENT_USER
+} from "../actions/Types";
+import {
+  isEmpty
+} from "../helpers/validation";
 const INIT = {
   isAuthenticated: false,
   user: {},
-  loading: true
 };
 
-export default function(state = INIT, action) {
+export default function (state = INIT, action) {
   switch (action.type) {
     case SET_CURRENT_USER:
       return {
         ...state,
         isAuthenticated: !isEmpty(action.payload),
-        user: action.payload,
-        loading: false
+          user: action.payload,
+          loading: false
       };
     default:
       return state;

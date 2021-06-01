@@ -5,9 +5,10 @@ import { logoutUser } from "../actions/Auth";
 
 class Navbar extends Component {
   render() {
-    console.log(this.props);
     const { isAuthenticated, user } = this.props.auth;
     const { logoutUser, history } = this.props;
+
+    // console.log("FROM THE NAVBAR: ", this.props.auth);
     return (
       <nav className="navbar navbar-expand-lg">
         <div className="container">
@@ -15,7 +16,7 @@ class Navbar extends Component {
             className="navbar-brand"
             to={!isAuthenticated ? "/" : "/dashboard"}
           >
-            Auth Connector
+            Mini PM Tool
           </Link>
           <button
             className="navbar-toggler"
@@ -42,17 +43,6 @@ class Navbar extends Component {
                       data-target="#navbarSupportedContent"
                     >
                       Signup
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link
-                      onClick={() => history.push("/login")}
-                      className="nav-link"
-                      to="/login"
-                      data-toggle="collapse"
-                      data-target="#navbarSupportedContent"
-                    >
-                      Log-in
                     </Link>
                   </li>
                 </React.Fragment>
@@ -90,7 +80,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { logoutUser }
-)(withRouter(Navbar));
+export default connect(mapStateToProps, { logoutUser })(withRouter(Navbar));

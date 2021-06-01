@@ -10,7 +10,7 @@ import {
 import { clearErrors } from "./Errors";
 import { clearFlashMsg } from "./Flash";
 
-const url = "https://auth-mini-server.herokuapp.com";
+const url = "https://project-management-mini-server.herokuapp.com";
 
 export const resetUser = email => dispatch => {
   dispatch(clearErrors());

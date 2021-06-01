@@ -36,7 +36,7 @@ class Signup extends Component {
     const {
       onSelectClear,
       onFieldChange,
-      onSignUpFieldClear,
+      onFormClear,
       signUpFullName,
       signUpEmail,
       signUpPassword,
@@ -97,7 +97,7 @@ class Signup extends Component {
                 <button type="submit" className="btn btn-primary">
                   Submit
                 </button>
-                <button onClick={onSignUpFieldClear} className="btn btn-danger">
+                <button onClick={onFormClear} className="btn btn-danger">
                   Reset
                 </button>
               </form>
